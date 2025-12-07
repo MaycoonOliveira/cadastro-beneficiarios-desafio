@@ -1,13 +1,14 @@
 using Desafio_Tecnico_Cadastro_de_Beneficiarios.Dto.Beneficiario;
 using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services.Interface;
-using Microsoft.AspNetCore.Http;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Validators.Create;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Validators.Update;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BeneficiarioController : ControllerBase
+    public class BeneficiarioController : MainController
     {
         private readonly IBeneficiarioInterface _beneficiarioInterface;
 
@@ -21,15 +22,10 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
         /// </summary>
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ListarBeneficiarios()
+        public async Task<IActionResult> BuscarBeneficiarios([FromQuery] BeneficiarioFiltroDto filtroDto)
         {
-            var beneficiario = await _beneficiarioInterface.ListarBeneficiarios();
-
-            if (!beneficiario.Status)
-                return StatusCode(StatusCodes.Status500InternalServerError, beneficiario);
-
-            return Ok(beneficiario);
+            var response = await _beneficiarioInterface.GetAllAsync(filtroDto);
+            return CustomResponse(response);
         }
 
         /// <summary>
@@ -38,20 +34,31 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Detalhe(int id)
         {
-            var beneficiario = await _beneficiarioInterface.BuscarBeneficiariosPorId(id);
+            var response = await _beneficiarioInterface.GetByIdAsync(id);
+            return CustomResponse(response);
+        }
 
-            if (!beneficiario.Status)
-            {
-                if (beneficiario.Error == "ValidationError")
-                    return NotFound(beneficiario);
+        /// <summary>
+        /// Criar Beneficiário
+        /// </summary>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> CriarBeneficiario([FromBody] BeneficiarioCriacaoDto beneficiarioCriacaoDto)
+        {
+            var validationResult = await new BeneficiarioCreatDtoValidator().ValidateAsync(beneficiarioCriacaoDto);
+            if (!validationResult.IsValid)
+                return CustomResponse(validationResult);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, beneficiario);
-            }
+            var response = await _beneficiarioInterface.CreateAsync(beneficiarioCriacaoDto);
 
-            return Ok(beneficiario);
+            if (!response.Status)
+                return CustomResponse(response);
+
+            return CreatedAtAction(nameof(Detalhe), new { id = response.Dados.Id }, response);
         }
 
         /// <summary>
@@ -59,21 +66,29 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> EditarBeneficiario([FromBody] BeneficiarioEdicaoDto dto)
+        public async Task<IActionResult> EditarBeneficiario(int id, [FromBody] BeneficiarioEdicaoDto dto)
         {
-            var beneficiario = await _beneficiarioInterface.EditarBeneficiarios(dto);
-
-            if (!beneficiario.Status)
+            if (dto == null)
             {
-                if (beneficiario.Error == "ValidationError")
-                    return NotFound(beneficiario);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, beneficiario);
+                AdicionarErroProcessamento("Corpo da requisição ausente.");
+                return CustomResponse();
             }
 
-            return Ok(beneficiario);
+            if (dto.Id != 0 && dto.Id != id)
+            {
+                AdicionarErroProcessamento("O id da rota deve ser igual ao id informado no corpo da requisição.");
+                return CustomResponse();
+            }
+            dto.Id = id;
+
+            var validationResult = await new BeneficiarioUpdateDtoValidator().ValidateAsync(dto);
+            if (!validationResult.IsValid)
+                return CustomResponse(validationResult);
+
+            var response = await _beneficiarioInterface.UpdateAsync(dto);
+            return CustomResponse(response);
         }
 
         /// <summary>
@@ -82,20 +97,14 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeletarBeneficiario(int id)
         {
-            var beneficiario = await _beneficiarioInterface.DeletarBeneficiario(id);
+            var response = await _beneficiarioInterface.DeleteAsync(id);
 
-            if (!beneficiario.Status)
-            {
-                if (beneficiario.Error == "ValidationError")
-                    return NotFound(beneficiario);
+            if (!response.Status)
+                return CustomResponse(response);
 
-                return StatusCode(StatusCodes.Status500InternalServerError, beneficiario);
-            }
-
-            return Ok(beneficiario);
+            return NoContent();
         }
     }
 }
