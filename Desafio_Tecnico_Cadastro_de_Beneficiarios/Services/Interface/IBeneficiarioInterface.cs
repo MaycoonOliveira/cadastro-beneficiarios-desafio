@@ -5,9 +5,10 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Services.Interface
 {
     public interface IBeneficiarioInterface
     {
-        Task<ResponseModel<List<BeneficiarioModel>>> ListarBeneficiarios();
-        Task<ResponseModel<BeneficiarioModel>> BuscarBeneficiariosPorId(int id);
-        Task<ResponseModel<BeneficiarioModel>> EditarBeneficiarios(BeneficiarioEdicaoDto beneficiarioEdicaoDto);
-        Task<ResponseModel<BeneficiarioModel>> DeletarBeneficiario(int id);
+        Task<ResponseModel<List<BeneficiarioResponseDto>>> GetAllAsync(BeneficiarioFiltroDto filtroDto);
+        Task<ResponseModel<BeneficiarioResponseDto>> GetByIdAsync(int id);
+        Task<ResponseModel<BeneficiarioResponseDto>> CreateAsync(BeneficiarioCriacaoDto beneficiarioCriacaoDto);
+        Task<ResponseModel<BeneficiarioResponseDto>> UpdateAsync(BeneficiarioEdicaoDto beneficiarioEdicaoDto);
+        Task<ResponseModel<BeneficiarioModel>> DeleteAsync(int id);
     }
 }

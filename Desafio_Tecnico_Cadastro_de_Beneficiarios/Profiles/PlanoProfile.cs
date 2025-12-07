@@ -9,6 +9,11 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Profiles
         public PlanoProfile()
         {
             CreateMap<PlanoCriacaoDto, PlanoModel>();
+            CreateMap<PlanoEdicaoDto, PlanoModel>();
+            CreateMap<PlanoModel, PlanoEdicaoDto>();
+
+            CreateMap<PlanoModel, PlanoResponseDto>()
+                .ForMember(dest => dest.Beneficiarios, opt => opt.MapFrom(src => src.Beneficiarios));
         }
     }
 }
