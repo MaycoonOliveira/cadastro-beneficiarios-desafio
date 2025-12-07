@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Dto.Beneficiario
 {
-    public class BeneficiarioEdicaoDto
+    public class BeneficiarioCriacaoDto
     {
-        public int Id { get; set; }
+
         public string NomeCompleto { get; set; }
         public string Cpf { get; set; }
         public DateTime DataNascimento { get; set; }

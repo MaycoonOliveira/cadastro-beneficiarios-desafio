@@ -1,9 +1,8 @@
 ﻿using Desafio_Tecnico_Cadastro_de_Beneficiarios.Enum;
-using System.ComponentModel.DataAnnotations;
 
 namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Dto.Beneficiario
 {
-    public class BeneficiarioEdicaoDto
+    public class BeneficiarioResponseDto
     {
         public int Id { get; set; }
         public string NomeCompleto { get; set; }
