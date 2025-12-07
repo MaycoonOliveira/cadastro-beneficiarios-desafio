@@ -1,19 +1,24 @@
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services;
+﻿using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services;
 using Desafio_Tecnico_Cadastro_de_Beneficiarios.Data;
 using Desafio_Tecnico_Cadastro_de_Beneficiarios.Profiles;
 using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services.Interface;
-using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseInMemoryDatabase("4tech-db-memory");
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+Console.WriteLine($"Ambiente ativo: {builder.Environment.EnvironmentName}");
 
 builder.Services.AddControllers();
 
