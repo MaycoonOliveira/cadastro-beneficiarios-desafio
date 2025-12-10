@@ -1,8 +1,8 @@
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Dto.Plano;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services.Interface;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Validators.Create;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Validators.Filter;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Validators.Update;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Dto.Plano;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Validators.Create;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Validators.Filter;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Validators.Update;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Domain.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers

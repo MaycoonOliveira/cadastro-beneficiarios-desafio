@@ -1,10 +1,7 @@
-﻿using Desafio_Tecnico_Cadastro_de_Beneficiarios.Enum;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Models;
+﻿using Desafio_Tecnico_Cadastro_de_Beneficiarios.Domain.Entities;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Domain.Enums;
 using FluentValidation.Results;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
 {
