@@ -1,0 +1,36 @@
+<div style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+  <div style="background: #fff; padding: 24px; border-radius: 8px;">
+
+    <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="margin: 0;">Beneficiários</h2>
+      <button nz-button nzType="primary" routerLink="/beneficiarios/novo">
+        <span nz-icon nzType="user-add"></span> Novo Beneficiário
+      </button>
+    </div>
+
+    <nz-table #basicTable [nzData]="beneficiarios" [nzLoading]="loading" [nzPageSize]="5">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Plano</th>
+          <th nzRight>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.nomeCompleto }}</td>
+          <td>{{ data.cpf }}</td>
+          <td>{{ data.plano?.nome || '-' }}</td>
+          <td>
+            <a [routerLink]="['/beneficiarios/editar', data.id]" style="margin-right: 12px;">Editar</a>
+            <a nz-popconfirm nzPopconfirmTitle="Deseja excluir este beneficiário?" (nzOnConfirm)="excluir(data.id)"
+              style="color: red;">
+              Excluir
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>

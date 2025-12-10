@@ -1,0 +1,38 @@
+<div style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+  <div style="background: #fff; padding: 24px; border-radius: 8px;">
+
+    <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="margin: 0;">Gerenciamento de Planos</h2>
+      <button nz-button nzType="primary" routerLink="/planos/novo">
+        <span nz-icon nzType="plus"></span> Novo Plano
+      </button>
+    </div>
+
+    <nz-table #basicTable [nzData]="planos" [nzLoading]="loading" [nzPageSize]="5">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome do Plano</th>
+          <th>Registro ANS</th>
+          <th nzRight>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.id }}</td>
+          <td>{{ data.nome }}</td>
+          <td>{{ data.codigo_registro_ans }}</td>
+          <td>
+            <a [routerLink]="['/planos/editar', data.id]" style="margin-right: 12px;">Editar</a>
+
+            <a nz-popconfirm nzPopconfirmTitle="Tem certeza?" nzOkText="Sim" nzCancelText="Não"
+              (nzOnConfirm)="excluir(data.id)" style="color: red;">
+              Excluir
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+  </div>
+</div>
