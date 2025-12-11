@@ -11,11 +11,13 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { FormsModule } from '@angular/forms';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-beneficiario-list',
   standalone: true,
-  imports: [CommonModule,
+  imports: [
+    CommonModule,
     RouterLink,
     FormsModule,
     NzTableModule,
@@ -23,7 +25,9 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
     NzIconModule,
     NzEmptyModule,
     NzModalModule,
-    NzSelectModule],
+    NzSelectModule,
+    NzInputModule
+  ],
   templateUrl: './beneficiario-list.html',
   styleUrl: './beneficiario-list.css',
 })
@@ -31,8 +35,10 @@ export class BeneficiarioList implements OnInit {
   private beneficiarioService = inject(BeneficiarioService);
   private message = inject(NzMessageService);
 
+  beneficiariosOriginais: Beneficiario[] = [];
   beneficiarios: Beneficiario[] = [];
   loading = true;
+  filtro = '';
 
   isVisible = false;
   isConfirmLoading = false;
@@ -47,6 +53,7 @@ export class BeneficiarioList implements OnInit {
     this.loading = true;
     this.beneficiarioService.getAll().subscribe({
       next: (dados) => {
+        this.beneficiariosOriginais = dados;
         this.beneficiarios = dados;
         this.loading = false;
       },
@@ -55,6 +62,18 @@ export class BeneficiarioList implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  filtrarDados() {
+    if (!this.filtro) {
+      this.beneficiarios = [...this.beneficiariosOriginais];
+    } else {
+      const dadosFiltro = this.filtro.toLowerCase();
+      this.beneficiarios = this.beneficiariosOriginais.filter(b =>
+        b.nomeCompleto.toLowerCase().includes(dadosFiltro) ||
+        b.cpf.includes(dadosFiltro)
+      );
+    }
   }
 
   abrirModalExclusao(id: number) {
@@ -77,6 +96,7 @@ export class BeneficiarioList implements OnInit {
       next: () => {
         this.message.success(`Agendado para exclusão (Prioridade: ${this.prioridadeSelecionada})`);
 
+        this.beneficiariosOriginais = this.beneficiariosOriginais.filter(b => b.id !== this.idParaExcluir);
         this.beneficiarios = this.beneficiarios.filter(b => b.id !== this.idParaExcluir);
 
         this.isVisible = false;

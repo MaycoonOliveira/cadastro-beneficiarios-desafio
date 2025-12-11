@@ -8,6 +8,16 @@
       </button>
     </div>
 
+    <div style="margin-bottom: 16px;">
+      <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input type="text" nz-input placeholder="Buscar por Nome ou CPF..." [(ngModel)]="filtro"
+          (ngModelChange)="filtrarDados()" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </div>
+
     <nz-table #basicTable [nzData]="beneficiarios" [nzLoading]="loading" [nzPageSize]="5">
       <thead>
         <tr>
