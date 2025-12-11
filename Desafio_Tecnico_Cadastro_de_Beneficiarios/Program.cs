@@ -26,6 +26,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPlanoInterface, PlanoService>();
 builder.Services.AddScoped<IBeneficiarioInterface, BeneficiarioService>();
+builder.Services.AddHostedService<Desafio_Tecnico_Cadastro_de_Beneficiarios.Workers.BeneficiarioExclusaoWorker>();
 
 builder.Services.AddAutoMapper(typeof(PlanoProfile).Assembly);
 

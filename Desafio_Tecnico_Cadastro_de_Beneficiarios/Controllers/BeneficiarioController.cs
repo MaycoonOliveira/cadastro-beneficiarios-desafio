@@ -97,14 +97,14 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeletarBeneficiario(int id)
+        public async Task<IActionResult> DeletarBeneficiario(int id, [FromQuery] int prioridade = 3)
         {
-            var response = await _beneficiarioInterface.DeleteAsync(id);
+            var response = await _beneficiarioInterface.DeleteAsync(id, prioridade);
 
             if (!response.Status)
                 return CustomResponse(response);
 
-            return NoContent();
+            return CustomResponse(response);
         }
     }
 }

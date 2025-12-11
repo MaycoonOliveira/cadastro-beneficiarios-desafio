@@ -13,8 +13,11 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Domain.Entities
         public Status Status { get; set; } = Status.ATIVO;
 
         public int PlanoId { get; set; }
-
         public PlanoModel Plano { get; set; }
+
+        public bool PendenteExclusao { get; set; } = false;
+        public DateTime? DataSolicitacaoExclusao { get; set; }
+        public int PrioridadeExclusao { get; set; }
     }
 
 }

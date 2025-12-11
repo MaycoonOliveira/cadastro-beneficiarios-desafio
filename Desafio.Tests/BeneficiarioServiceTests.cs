@@ -145,20 +145,30 @@ namespace Desafio_Tecnico_Tests.Services
         }
 
         [Fact]
-        public async Task DeleteAsync_DeveRemoverBeneficiario_QuandoIdExiste()
+        public async Task DeleteAsync_DeveAgendarExclusao_QuandoIdExiste()
         {
             // Arrange
             var idParaRemover = 5;
-            await _context.Beneficiarios.AddAsync(new BeneficiarioModel { Id = idParaRemover, NomeCompleto = "Para Remover", Cpf = "555" });
+            await _context.Beneficiarios.AddAsync(new BeneficiarioModel
+            {
+                Id = idParaRemover,
+                NomeCompleto = "Para Remover",
+                Cpf = "555",
+                PendenteExclusao = false 
+            });
             await _context.SaveChangesAsync();
 
             // Act
-            var resultado = await _service.DeleteAsync(idParaRemover);
+            var resultado = await _service.DeleteAsync(idParaRemover, 3);
+
             var buscaAposRemocao = await _context.Beneficiarios.FindAsync(idParaRemover);
 
             // Assert
             Assert.True(resultado.Status);
-            Assert.Null(buscaAposRemocao); 
+
+            
+            Assert.NotNull(buscaAposRemocao);
+            Assert.True(buscaAposRemocao.PendenteExclusao);
         }
     }
 }

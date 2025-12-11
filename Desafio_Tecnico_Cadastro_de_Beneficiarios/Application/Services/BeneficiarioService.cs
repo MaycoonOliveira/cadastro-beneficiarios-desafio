@@ -160,7 +160,7 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Services
             }
         }
 
-        public async Task<ResponseModel<BeneficiarioModel>> DeleteAsync(int id)
+        public async Task<ResponseModel<BeneficiarioModel>> DeleteAsync(int id, int prioridade)
         {
             var response = new ResponseModel<BeneficiarioModel>();
             try
@@ -175,11 +175,16 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Services
                     return response;
                 }
 
-                _context.Beneficiarios.Remove(beneficiario);
+                beneficiario.PendenteExclusao = true;
+                beneficiario.DataSolicitacaoExclusao = DateTime.Now;
+
+                beneficiario.PrioridadeExclusao = prioridade;
+
+                _context.Beneficiarios.Update(beneficiario);
                 await _context.SaveChangesAsync();
 
                 response.Dados = beneficiario;
-                response.Mensagem = "Beneficiário removido com sucesso";
+                response.Mensagem = $"Agendado para exclusão (Prioridade: {beneficiario.PrioridadeExclusao})";
                 return response;
             }
             catch (Exception ex)

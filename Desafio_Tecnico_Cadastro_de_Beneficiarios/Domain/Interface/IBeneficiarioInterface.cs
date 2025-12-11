@@ -9,6 +9,6 @@ namespace Desafio_Tecnico_Cadastro_de_Beneficiarios.Domain.Interface
         Task<ResponseModel<BeneficiarioResponseDto>> GetByIdAsync(int id);
         Task<ResponseModel<BeneficiarioResponseDto>> CreateAsync(BeneficiarioCriacaoDto beneficiarioCriacaoDto);
         Task<ResponseModel<BeneficiarioResponseDto>> UpdateAsync(BeneficiarioEdicaoDto beneficiarioEdicaoDto);
-        Task<ResponseModel<BeneficiarioModel>> DeleteAsync(int id);
+        Task<ResponseModel<BeneficiarioModel>> DeleteAsync(int id, int prioridade);
     }
 }
