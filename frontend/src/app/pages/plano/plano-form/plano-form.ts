@@ -75,7 +75,7 @@ export class PlanoForm implements OnInit {
 
     request.subscribe({
       next: () => {
-        this.message.success('Salvo com sucesso!');
+        this.message.success('Plano salvo com sucesso!');
         this.router.navigate(['/planos']);
       },
       error: (erro) => {

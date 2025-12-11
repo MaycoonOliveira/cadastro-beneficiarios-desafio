@@ -96,11 +96,11 @@ private fb = inject(FormBuilder);
 
     request.subscribe({
       next: () => {
-        this.message.success('Salvo com sucesso!');
+        this.message.success('Beneficiário salvo com sucesso!');
         this.router.navigate(['/beneficiarios']);
       },
       error: (erro) => {
-        this.message.error(erro.error?.mensagem || 'Erro ao salvar');
+        this.message.error(erro.error?.mensagem || 'Erro ao salvar beneficiário');
         this.loading = false;
       }
     });

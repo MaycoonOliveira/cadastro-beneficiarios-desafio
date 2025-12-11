@@ -17,7 +17,7 @@
           <th nzRight>Ações</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody *ngIf="!loading && planos.length > 0">
         <tr *ngFor="let data of basicTable.data">
           <td>{{ data.id }}</td>
           <td>{{ data.nome }}</td>
@@ -25,14 +25,33 @@
           <td>
             <a [routerLink]="['/planos/editar', data.id]" style="margin-right: 12px;">Editar</a>
 
-            <a nz-popconfirm nzPopconfirmTitle="Tem certeza?" nzOkText="Sim" nzCancelText="Não"
-              (nzOnConfirm)="excluir(data.id)" style="color: red;">
-              Excluir
+            <a (click)="abrirModalExclusao(data.id)" style="color: red; cursor: pointer; font-weight: 500;">
+              <span nz-icon nzType="delete"></span> Excluir
             </a>
           </td>
         </tr>
       </tbody>
     </nz-table>
 
+    <nz-empty *ngIf="!loading && planos.length === 0" nzNotFoundContent="Nenhum plano encontrado."></nz-empty>
   </div>
 </div>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Confirmar Exclusão" (nzOnCancel)="cancelarExclusao()"
+  (nzOnOk)="confirmarExclusao()" [nzOkLoading]="isConfirmLoading" nzOkText="Sim, Excluir" nzCancelText="Cancelar"
+  nzOkDanger="true">
+  <ng-container *nzModalContent>
+    <div style="display: flex; align-items: start;">
+      <span nz-icon nzType="warning" nzTheme="fill"
+        style="color: #faad14; font-size: 24px; margin-right: 12px; margin-top: 2px;"></span>
+      <div>
+        <span style="font-size: 16px; font-weight: 500; display: block; margin-bottom: 8px;">
+          Tem certeza que deseja remover este plano?
+        </span>
+        <div style="font-size: 13px; color: #666;">
+          Essa ação removerá o plano do sistema. Certifique-se de que não existam beneficiários vinculados a ele.
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>

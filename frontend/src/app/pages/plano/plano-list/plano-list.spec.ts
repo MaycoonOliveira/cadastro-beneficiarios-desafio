@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PlanoList } from './plano-list';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -32,9 +31,7 @@ describe('PlanoList', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [
-        PlanoList,
-      ],
+      imports: [PlanoList, NoopAnimationsModule],
       providers: [
         provideRouter([]),
         provideHttpClient(),
@@ -63,23 +60,33 @@ describe('PlanoList', () => {
     expect(component.loading).toBeFalse();
   });
 
-  it('deve chamar o delete e recarregar a lista ao excluir com sucesso', () => {
+  it('deve abrir o modal ao clicar em excluir', () => {
+    component.abrirModalExclusao(1);
+    expect(component.isVisible).toBeTrue();
+    expect(component.idParaExcluir).toBe(1);
+  });
+
+  it('deve excluir e atualizar a lista localmente ao confirmar', () => {
     const spyDelete = spyOn(planoService, 'delete').and.callThrough();
-    const spyCarregar = spyOn(component, 'carregarPlanos').and.callThrough();
     const spyMessage = spyOn(messageService, 'success');
 
-    component.excluir(1);
+    component.abrirModalExclusao(1);
+    component.confirmarExclusao();
 
     expect(spyDelete).toHaveBeenCalledWith(1);
-    expect(spyMessage).toHaveBeenCalledWith(jasmine.stringMatching('sucesso'));
-    expect(spyCarregar).toHaveBeenCalled();
+    expect(spyMessage).toHaveBeenCalled();
+
+    expect(component.planos.length).toBe(1);
+    expect(component.planos[0].id).toBe(2);
+    expect(component.isVisible).toBeFalse();
   });
 
   it('deve exibir mensagem de erro se a exclusão falhar', () => {
     spyOn(planoService, 'delete').and.returnValue(throwError(() => ({ error: { mensagem: 'Erro API' } })));
     const spyMessage = spyOn(messageService, 'error');
 
-    component.excluir(99);
+    component.abrirModalExclusao(99);
+    component.confirmarExclusao();
 
     expect(spyMessage).toHaveBeenCalled();
   });

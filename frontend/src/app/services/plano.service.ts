@@ -10,30 +10,30 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class PlanoService {
-  private apiUrl = `${environment.api}/Plano`;
+  private plano = `Plano`;
   private apiService = inject(ApiService);
 
   getAll(): Observable<Plano[]> {
-    return this.apiService.get<any>(this.apiUrl).pipe(
+    return this.apiService.get<any>(this.plano).pipe(
       map(response => response.dados)
     );
   }
 
   getById(id: number): Observable<Plano> {
-    return this.apiService.get<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.apiService.get<any>(`${this.plano}/${id}`).pipe(
       map(response => response.dados)
     );
   }
 
   create(plano: PlanoCriacao): Observable<any> {
-    return this.apiService.post<any>(this.apiUrl, plano);
+    return this.apiService.post<any>(this.plano, plano);
   }
 
   update(id: number, plano: PlanoCriacao): Observable<any> {
-    return this.apiService.put<any>(`${this.apiUrl}/${id}`, { id, ...plano });
+    return this.apiService.put<any>(`${this.plano}/${id}`, { id, ...plano });
   }
 
   delete(id: number): Observable<any> {
-    return this.apiService.delete<any>(`${this.apiUrl}/${id}`);
+    return this.apiService.delete<any>(`${this.plano}/${id}`);
   }
 }

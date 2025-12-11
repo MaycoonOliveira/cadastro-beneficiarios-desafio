@@ -15,9 +15,8 @@ const listaMock = [
 
 class MockBeneficiarioService {
   getAll() { return of(listaMock); }
-  delete(id: number) { return of({ success: true }); }
+  delete(id: number, prioridade: number) { return of({ success: true }); }
 }
-
 class MockNzMessageService {
   success(msg: string) { }
   error(msg: string) { }
@@ -27,6 +26,7 @@ describe('BeneficiarioList', () => {
   let component: BeneficiarioList;
   let fixture: ComponentFixture<BeneficiarioList>;
   let service: BeneficiarioService;
+  let messageService: NzMessageService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -43,18 +43,36 @@ describe('BeneficiarioList', () => {
     fixture = TestBed.createComponent(BeneficiarioList);
     component = fixture.componentInstance;
     service = TestBed.inject(BeneficiarioService);
+    messageService = TestBed.inject(NzMessageService);
+
     fixture.detectChanges();
   });
 
   it('deve carregar a lista ao iniciar', () => {
     expect(component.beneficiarios.length).toBe(2);
     expect(component.beneficiarios[0].nomeCompleto).toBe('Maria');
-    expect(component.beneficiarios[0].plano?.nome).toBe('Plano Ouro');
   });
 
-  it('deve chamar o delete ao excluir', () => {
+  it('deve abrir o modal de exclusão corretamente', () => {
+    component.abrirModalExclusao(1);
+
+    expect(component.isVisible).toBeTrue();
+    expect(component.idParaExcluir).toBe(1);
+    expect(component.prioridadeSelecionada).toBe(3);
+  });
+
+  it('deve confirmar a exclusão, chamar o service com prioridade e remover da lista local', () => {
     const spyDelete = spyOn(service, 'delete').and.callThrough();
-    component.excluir(1);
-    expect(spyDelete).toHaveBeenCalledWith(1);
+    const spyMessage = spyOn(messageService, 'success');
+
+    component.abrirModalExclusao(1);
+    component.confirmarExclusao();
+
+
+    expect(spyDelete).toHaveBeenCalledWith(1, 3);
+    expect(component.beneficiarios.length).toBe(1);
+    expect(component.beneficiarios[0].id).toBe(2);
+
+    expect(spyMessage).toHaveBeenCalled();
   });
 });

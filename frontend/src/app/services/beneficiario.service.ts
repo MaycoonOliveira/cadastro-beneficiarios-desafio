@@ -10,31 +10,30 @@ import { ApiService } from './api.service';
   providedIn: 'root'
 })
 export class BeneficiarioService {
+  private beneficiario = `Beneficiario`;
   private apiService = inject(ApiService);
 
-  private apiUrl = `${environment.api}/Beneficiario`;
-
   getAll(): Observable<Beneficiario[]> {
-    return this.apiService.get<any>(this.apiUrl).pipe(
+    return this.apiService.get<any>(this.beneficiario).pipe(
       map(response => response.dados)
     );
   }
 
   getById(id: number): Observable<Beneficiario> {
-    return this.apiService.get<any>(`${this.apiUrl}/${id}`).pipe(
+    return this.apiService.get<any>(`${this.beneficiario}/${id}`).pipe(
       map(response => response.dados)
     );
   }
 
   create(beneficiario: BeneficiarioCriacao): Observable<any> {
-    return this.apiService.post<any>(this.apiUrl, beneficiario);
+    return this.apiService.post<any>(this.beneficiario, beneficiario);
   }
 
   update(id: number, beneficiario: BeneficiarioCriacao): Observable<any> {
-    return this.apiService.put<any>(`${this.apiUrl}/${id}`, beneficiario);
+    return this.apiService.put<any>(`${this.beneficiario}/${id}`, beneficiario);
   }
 
-  delete(id: number): Observable<any> {
-    return this.apiService.delete<any>(`${this.apiUrl}/${id}`);
+  delete(id: number, prioridade: number = 3): Observable<any> {
+    return this.apiService.delete<any>(`${this.beneficiario}/${id}?prioridade=${prioridade}`);
   }
 }
