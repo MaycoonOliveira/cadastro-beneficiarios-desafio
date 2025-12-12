@@ -1,0 +1,27 @@
+<div style="padding: 24px; background: #f0f2f5; min-height: 100vh; display: flex; justify-content: center;">
+  <nz-card [nzTitle]="titulo" style="width: 600px; margin-top: 40px;">
+
+    <form nz-form [formGroup]="form" (ngSubmit)="salvar()" nzLayout="vertical">
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Nome do Plano</nz-form-label>
+        <nz-form-control nzErrorTip="Por favor, insira o nome do plano!">
+          <input nz-input formControlName="nome" placeholder="Ex: Plano Ouro" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzRequired>Código ANS</nz-form-label>
+        <nz-form-control nzErrorTip="O código ANS é obrigatório!">
+          <input nz-input formControlName="codigo_registro_ans" placeholder="Ex: 123456" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button nz-button type="button" routerLink="/planos">Cancelar</button>
+        <button nz-button nzType="primary" [nzLoading]="loading" type="submit">Salvar</button>
+      </div>
+
+    </form>
+  </nz-card>
+</div>

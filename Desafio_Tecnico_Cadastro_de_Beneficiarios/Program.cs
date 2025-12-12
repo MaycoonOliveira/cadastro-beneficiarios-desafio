@@ -1,19 +1,24 @@
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Data;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Profiles;
-using Desafio_Tecnico_Cadastro_de_Beneficiarios.Services.Interface;
-using DotNetEnv;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Domain.Interface;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Infrastructure.Data;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Services;
+using Desafio_Tecnico_Cadastro_de_Beneficiarios.Application.Profiles;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-Env.Load();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseInMemoryDatabase("4tech-db-memory");
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+Console.WriteLine($"Ambiente ativo: {builder.Environment.EnvironmentName}");
 
 builder.Services.AddControllers();
 
@@ -21,8 +26,19 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IPlanoInterface, PlanoService>();
 builder.Services.AddScoped<IBeneficiarioInterface, BeneficiarioService>();
+builder.Services.AddHostedService<Desafio_Tecnico_Cadastro_de_Beneficiarios.Workers.BeneficiarioExclusaoWorker>();
 
 builder.Services.AddAutoMapper(typeof(PlanoProfile).Assembly);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200") 
+              .AllowAnyHeader()
+              .AllowAnyMethod(); 
+    });
+});
 
 var app = builder.Build();
 
@@ -38,6 +54,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHttpsRedirection();
+app.UseCors("AllowAngularApp");
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

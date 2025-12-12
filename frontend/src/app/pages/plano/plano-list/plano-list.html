@@ -1,0 +1,67 @@
+<div style="padding: 24px; background: #f0f2f5; min-height: 100vh;">
+  <div style="background: #fff; padding: 24px; border-radius: 8px;">
+
+    <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+      <h2 style="margin: 0;">Gerenciamento de Planos</h2>
+      <button nz-button nzType="primary" routerLink="/planos/novo">
+        <span nz-icon nzType="plus"></span> Novo Plano
+      </button>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <nz-input-group [nzSuffix]="suffixIconSearch">
+        <input type="text" nz-input placeholder="Buscar por Nome ou Registro ANS..." [(ngModel)]="filtro"
+          (ngModelChange)="filtrarDados()" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+        <span nz-icon nzType="search"></span>
+      </ng-template>
+    </div>
+
+    <nz-table #basicTable [nzData]="planos" [nzLoading]="loading" [nzPageSize]="5">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome do Plano</th>
+          <th>Registro ANS</th>
+          <th nzRight>Ações</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="!loading && planos.length > 0">
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.id }}</td>
+          <td>{{ data.nome }}</td>
+          <td>{{ data.codigo_registro_ans }}</td>
+          <td>
+            <a [routerLink]="['/planos/editar', data.id]" style="margin-right: 12px;">Editar</a>
+
+            <a (click)="abrirModalExclusao(data.id)" style="color: red; cursor: pointer; font-weight: 500;">
+              <span nz-icon nzType="delete"></span> Excluir
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+    <nz-empty *ngIf="!loading && planos.length === 0" nzNotFoundContent="Nenhum plano encontrado."></nz-empty>
+  </div>
+</div>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Confirmar Exclusão" (nzOnCancel)="cancelarExclusao()"
+  (nzOnOk)="confirmarExclusao()" [nzOkLoading]="isConfirmLoading" nzOkText="Sim, Excluir" nzCancelText="Cancelar"
+  nzOkDanger="true">
+  <ng-container *nzModalContent>
+    <div style="display: flex; align-items: start;">
+      <span nz-icon nzType="warning" nzTheme="fill"
+        style="color: #faad14; font-size: 24px; margin-right: 12px; margin-top: 2px;"></span>
+      <div>
+        <span style="font-size: 16px; font-weight: 500; display: block; margin-bottom: 8px;">
+          Tem certeza que deseja remover este plano?
+        </span>
+        <div style="font-size: 13px; color: #666;">
+          Essa ação removerá o plano do sistema. Certifique-se de que não existam beneficiários vinculados a ele.
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
